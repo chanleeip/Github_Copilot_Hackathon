@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 import argparse
+import sys
+
 import requests
 import csv
 import logging
@@ -17,6 +19,19 @@ from datetime import date, timedelta
 from matplotlib import pyplot as plt
 
 API_KEY = '9297169f55274dfbf3f79162c9678b13'
+owm = OWM(API_KEY)
+from contextlib import contextmanager
+import sys, os
+
+@contextmanager
+def suppress_stdout():
+    with open(os.devnull, "w") as devnull:
+        old_stdout = sys.stdout
+        sys.stdout = devnull
+        try:
+            yield
+        finally:
+            sys.stdout = old_stdout
 
 def get_weather_forecast(city, unit, latitude=None, longitude=None):
     if city:
@@ -46,36 +61,38 @@ def get_weather_forecast(city, unit, latitude=None, longitude=None):
     print(f"Humidity: {humidity}%")
     print(f"Wind Speed: {wind_speed} m/s")
 def get_datasheet_for_wind(lat,long):
-    latitude , longitude = lat , long
-    latitude = float(latitude)
-    longitude = float(longitude)
-    Start_date = "2023-04-26"
-    end_datae = "2023-05-03"
-    url = f"https://api.open-meteo.com/v1/forecast?start_date={Start_date}&end_date={end_datae}&latitude={latitude}&longitude={longitude}&hourly=temperature_2m,surface_pressure,windspeed_10m,windspeed_80m,temperature_80m"
-    response = requests.get(url)
-    dataa = response.json()
-    # print(dataa)
-    time = dataa['hourly']['time']
-    pressure = dataa['hourly']['surface_pressure']
-    temperature = dataa['hourly']['temperature_2m']
-    wind_speed = dataa['hourly']['windspeed_10m']
-    temperature_1 = dataa['hourly']['temperature_80m']
-    wind_speed_1 = dataa['hourly']['windspeed_80m']
-    # print(type(time))
-    with open('weather_1.csv', 'w', newline='') as csvfile:
-        fieldnames = ['variable_name','pressure', 'temperature', 'wind_speed', 'roughness_length', 'temperature_1','wind_speed_1']
-        writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+    with suppress_stdout():
+        latitude , longitude = lat , long
+        latitude = float(latitude)
+        longitude = float(longitude)
+        Start_date = "2023-04-26"
+        end_datae = "2023-05-03"
+        url = f"https://api.open-meteo.com/v1/forecast?start_date={Start_date}&end_date={end_datae}&latitude={latitude}&longitude={longitude}&hourly=temperature_2m,surface_pressure,windspeed_10m,windspeed_80m,temperature_80m"
+        response = requests.get(url)
+        dataa = response.json()
 
-        # write the header row
-        writer.writeheader()
-        roww={'variable_name':'height','pressure':0,'temperature':2, 'wind_speed':10, 'roughness_length':0, 'temperature_1':10,'wind_speed_1':80}
-        # write a row with all of the data
-        writer.writerow(roww)
-        for i in range(len(time)):
-            row = {'variable_name': time[i], 'pressure': pressure[i]*1000, 'temperature': temperature[i]*10,
-                   'wind_speed': wind_speed[i], 'roughness_length':0.15,'temperature_1':temperature_1[i],'wind_speed_1':wind_speed_1[i]}
-            writer.writerow(row)
+        time = dataa['hourly']['time']
+        pressure = dataa['hourly']['surface_pressure']
+        temperature = dataa['hourly']['temperature_2m']
+        wind_speed = dataa['hourly']['windspeed_10m']
+        temperature_1 = dataa['hourly']['temperature_80m']
+        wind_speed_1 = dataa['hourly']['windspeed_80m']
+
+        with open('weather_1.csv', 'w', newline='') as csvfile:
+            fieldnames = ['variable_name','pressure', 'temperature', 'wind_speed', 'roughness_length', 'temperature_1','wind_speed_1']
+            writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+
+            # write the header row
+            writer.writeheader()
+            roww={'variable_name':'height','pressure':0,'temperature':2, 'wind_speed':10, 'roughness_length':0, 'temperature_1':10,'wind_speed_1':80}
+            # write a row with all of the data
+            writer.writerow(roww)
+            for i in range(len(time)):
+                row = {'variable_name': time[i], 'pressure': pressure[i]*1000, 'temperature': temperature[i]*10,
+                       'wind_speed': wind_speed[i], 'roughness_length':0.15,'temperature_1':temperature_1[i],'wind_speed_1':wind_speed_1[i]}
+                writer.writerow(row)
 def find_current_weather_status(lat, long):
+    mgr = owm.weather_manager()
     observation = mgr.weather_at_coords(lat, long)
     weather = observation.weather
     print (weather.detailed_status)
@@ -403,8 +420,8 @@ def plot_or_print( e126):
         plt.ylabel("Power in W")
         plt.show()
         pass
-    else:
-        print(e126.power_output)
+    # else:
+    #     print(e126.power_output)
 
     # plot or print power curve
 
@@ -480,9 +497,9 @@ def main():
         parser.print_help()
         return
 
-    get_weather_forecast(args.city, args.unit, args.latitude, args.longitude)
+    # get_weather_forecast(args.city, args.unit, args.latitude, args.longitude)
     get_datasheet_for_wind(args.latitude, args.longitude)
-    find_current_weather_status(args.latitude, args.longitude)
+    # find_current_weather_status(args.latitude, args.longitude)
 
 
 if __name__ == '__main__':
