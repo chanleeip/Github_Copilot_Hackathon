@@ -490,19 +490,35 @@ def main():
     parser.add_argument('--longitude', type=float, help='Longitude of the location')
     parser.add_argument('--unit', type=str, default='Celsius', choices=['Celsius', 'Fahrenheit'],
                         help='Temperature unit (Celsius or Fahrenheit)')
-    parser.add_argument('--weather_forecast',action='store_true',help='Specify what operation to do')
+    parser.add_argument('--weather_forecast',action='store_true',help='Weather forecast of the city')
+    parser.add_argument('--current_weather_status', action='store_true', help='current weather status')
+    parser.add_argument('--gonna_rain_tomorrow', action='store_true', help='Specify what operation to do')
+    parser.add_argument('--current_temp', action='store_true', help='Specify what operation to do')
+    parser.add_argument('--predict_solar_energy', action='store_true', help='Specify what operation to do')
+    parser.add_argument('--temperature_forecasrt', action='store_true', help='Specify what operation to do')
+    parser.add_argument('--humid_forecast', action='store_true', help='Specify what operation to do')
+    parser.add_argument('--dew_forecast', action='store_true', help='Specify what operation to do')
+    parser.add_argument('--precipitation_forecast', action='store_true', help='Specify what operation to do')
+    parser.add_argument('--rain_forecast', action='store_true', help='Specify what operation to do')
+    parser.add_argument('--cloud_cover_forecast', action='store_true', help='Specify what operation to do')
+    parser.add_argument('--wind_speed_forecast', action='store_true', help='Specify what operation to do')
+    parser.add_argument('--irradiance_forecast', action='store_true', help='Specify what operation to do')
+    parser.add_argument('--wind_energy_predict', action='store_true', help='Specify what operation to do')
     args = parser.parse_args()
 
 
     if args.city is None and args.latitude is None and args.longitude is None:
         parser.print_help()
         return
-
-    # find_current_weather_status(args.latitude, args.longitude)
-    # get_datasheet_for_wind(args.latitude, args.longitude)
+    if args.weather_status:
+        find_current_weather_status(args.latitude, args.longitude)
+    if args.wind_calculate:
+        get_datasheet_for_wind(args.latitude, args.longitude)
+    if args.gonna_rain_tomorrow:
+        is_it_going_to_rain_tomorrow(args.latitude, args.longitude)
     if args.weather_forecast:
         get_weather_forecast(args.city, args.unit, args.latitude, args.longitude)
-    print('cli.py error unexpected input'
+    print('cli --error unexpected input')
 
 
 if __name__ == '__main__':
