@@ -490,6 +490,7 @@ def main():
     parser.add_argument('--longitude', type=float, help='Longitude of the location')
     parser.add_argument('--unit', type=str, default='Celsius', choices=['Celsius', 'Fahrenheit'],
                         help='Temperature unit (Celsius or Fahrenheit)')
+    parser.add_argument('--weather_forecast',action='store_true',help='Specify what operation to do')
     args = parser.parse_args()
 
 
@@ -497,9 +498,11 @@ def main():
         parser.print_help()
         return
 
-    # get_weather_forecast(args.city, args.unit, args.latitude, args.longitude)
-    get_datasheet_for_wind(args.latitude, args.longitude)
     # find_current_weather_status(args.latitude, args.longitude)
+    # get_datasheet_for_wind(args.latitude, args.longitude)
+    if args.weather_forecast:
+        get_weather_forecast(args.city, args.unit, args.latitude, args.longitude)
+    print('cli.py error unexpected input'
 
 
 if __name__ == '__main__':
