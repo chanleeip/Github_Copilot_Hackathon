@@ -1,9 +1,16 @@
+
 import os
 import pandas as pd
 import requests
 import logging
 from windpowerlib import ModelChain, WindTurbine, create_power_curve
-from matplotlib import pyplot as plt
+
+try:
+    from matplotlib import pyplot as plt
+except ImportError:
+    plt = None
+
+
 def get_weather_data(filename="weather.csv", **kwargs):
     if "datapath" not in kwargs:
         kwargs["datapath"] = os.path.dirname(__file__)
@@ -125,8 +132,8 @@ def plot_or_print( e126):
         plt.ylabel("Power in W")
         plt.show()
         pass
-    # else:
-    #     print(e126.power_output)
+    else:
+        print(e126.power_output)
 
     # plot or print power curve
 
@@ -145,4 +152,9 @@ def run_example():
     e126 = initialize_wind_turbines()
     calculate_power_output(weather, e126)
     plot_or_print(e126)
+    print (calculate_power_output(weather,e126))
 run_example()
+
+
+
+

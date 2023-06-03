@@ -19,6 +19,7 @@ from pvlib.temperature import TEMPERATURE_MODEL_PARAMETERS
 from datetime import date, timedelta
 import wind_energy_output_find
 
+
 app = Flask(__name__)
 CORS(app)
 app.config['SESSION_TYPE'] = 'memcached'
