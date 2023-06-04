@@ -312,8 +312,6 @@ def get_datasheet_for_wind(lat,long,start_date,end_date):
                    'wind_speed': wind_speed[i], 'roughness_length':0.15,'temperature_1':temperature_1[i],'wind_speed_1':wind_speed_1[i]}
             writer.writerow(row)
 
-
-
 c=0
 
 
