@@ -20,7 +20,7 @@
 #### now run by
 `$ cli.py`
 
-#Documentation
+# Documentation
 - ##### To input the city use the argument `--city`
 - ##### To input the longtude use the argument `--longitude`
 - ##### To input the latitude use the argument `--latitude`
