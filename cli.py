@@ -61,13 +61,13 @@ def get_weather_forecast(city, unit, latitude=None, longitude=None):
     print(f"Temperature: {temperature} {unit}")
     print(f"Humidity: {humidity}%")
     print(f"Wind Speed: {wind_speed} m/s")
-def get_datasheet_for_wind(lat,long):
+def get_datasheet_for_wind(lat,long,start_date,end_date):
     with suppress_stdout():
         latitude , longitude = lat , long
         latitude = float(latitude)
         longitude = float(longitude)
-        Start_date = "2023-04-26"
-        end_datae = "2023-05-03"
+        Start_date = start_date[:10]
+        end_datae = end_date[:10]
         url = f"https://api.open-meteo.com/v1/forecast?start_date={Start_date}&end_date={end_datae}&latitude={latitude}&longitude={longitude}&hourly=temperature_2m,surface_pressure,windspeed_10m,windspeed_80m,temperature_80m"
         response = requests.get(url)
         dataa = response.json()
@@ -101,25 +101,29 @@ def is_it_going_to_rain_tomorrow(lat,long):
     mgr = owm.weather_manager()
     three_h_forecaster = mgr.forecast_at_coords(lat,long,interval='3h')
     tomorrow = timestamps.tomorrow()  # datetime object for tomorrow
-    print( three_h_forecaster.will_be_rainy_at(tomorrow))
+    if three_h_forecaster.will_be_rainy_at(tomorrow) == 'false':
+        print('Not gonna rain Tomorrow')
+    else:
+        print('It''s gonna rain Tomorrow')
+
 def current_temperature(lat,long):
     url = f"https://api.open-meteo.com/v1/forecast?latitude={lat}&longitude={long}&hourly=temperature_2m&timezone=Asia/Tokyo&limit=7"
     response = requests.get(url)
     data = response.json()
     temperature = data["hourly"]["temperature_2m"]
-    print( temperature[0])
-def get_datasheet_for_normal_machine_learning(lat,long):
+    print(str(temperature[0]) + "°C")
+def get_datasheet_for_normal_machine_learning(lat,long,start_date,end_date):
     latitude , longitude = lat,long
     latitude = float(latitude)
     longitude = float(longitude)
-    Start_date = "2023-04-26"
-    end_datae = "2023-05-03"
+    Start_date = start_date[:10]
+    end_datae = end_date[:10]
     url = f"https://api.open-meteo.com/v1/forecast?start_date={Start_date}&end_date={end_datae}&latitude={latitude}&longitude={longitude}&hourly=temperature_2m,windspeed_10m,shortwave_radiation,direct_radiation,diffuse_radiation,direct_normal_irradiance,terrestrial_radiation"
     response = requests.get(url)
 
     # Parse the JSON response to a list of dictionaries
     dataa = response.json()
-    print(dataa)
+   # print(dataa)
     # print(dataa)
     time = dataa['hourly']['time']
     temperature = dataa['hourly']['temperature_2m']
@@ -127,7 +131,7 @@ def get_datasheet_for_normal_machine_learning(lat,long):
     shortwave_radiation = dataa['hourly']['shortwave_radiation']
     diffuse_radiation = dataa['hourly']['diffuse_radiation']
     direct_normal_irradiance = dataa['hourly']['direct_normal_irradiance']
-    print(type(time))
+    #print(type(time))
 
     # Open a new file to write the CSV data
     with open('data.csv', 'w', newline='') as csvfile:
@@ -142,13 +146,12 @@ def get_datasheet_for_normal_machine_learning(lat,long):
             row = {'ghi': shortwave_radiation[i], 'dni': direct_normal_irradiance[i], 'dhi': diffuse_radiation[i],
                    'temp_air': temperature[i], 'wind_speed': windspeed[i]}
             writer.writerow(row)
-def get_Normal_enerdy_predict(lat,long):
-    get_datasheet_for_normal_machine_learning()
+def get_Normal_enerdy_predict(lat,long,start_date,end_date):
     latitude , longitude =lat,long
     latitude = float(latitude)
     longitude = float(longitude)
-    Start_date = "2023-04-26 00:00"
-    end_datae = "2023-05-03 23:00"
+    Start_date = start_date
+    end_datae = end_date
     temperature_model_parameters = TEMPERATURE_MODEL_PARAMETERS['sapm']['open_rack_glass_glass']
     sandia_modules = pvlib.pvsystem.retrieve_sam('SandiaMod')
     cec_inverters = pvlib.pvsystem.retrieve_sam('cecinverter')
@@ -167,7 +170,15 @@ def get_Normal_enerdy_predict(lat,long):
     mc.run_model(df)
     power_output = mc.results.dc['v_mp'] * mc.results.dc['i_mp'] / 1000
     poweer = power_output.tolist()
-    print( poweer)
+    #print( poweer)
+    plt.plot(date_range, poweer, marker='o', label='Power Output')
+    plt.xlabel('Date')
+    plt.ylabel('Power Output (kW)')
+    plt.title('Solar Power Output')
+    plt.grid(True)
+    plt.xticks(rotation=45)
+    plt.legend()
+    plt.show()
 def temperature_forecasting(lat,long):
     lat,long = lat,long
     print(lat,long)
@@ -270,12 +281,12 @@ def irradiance_forecasting(lat,long):
     plt.title('7-Day Irradiance Forecast')
     plt.show()
     # return irradnce_yaxis
-def get_datasheet_for_wind(lat,long):
+def get_datasheet_for_wind(lat,long,start_date,end_date):
     latitude , longitude = lat,long
     latitude = float(latitude)
     longitude = float(longitude)
-    Start_date = "2023-04-26"
-    end_datae = "2023-05-03"
+    Start_date = start_date[:10]
+    end_datae = end_date[:10]
     url = f"https://api.open-meteo.com/v1/forecast?start_date={Start_date}&end_date={end_datae}&latitude={latitude}&longitude={longitude}&hourly=temperature_2m,surface_pressure,windspeed_10m,windspeed_80m,temperature_80m"
     response = requests.get(url)
     dataa = response.json()
@@ -300,43 +311,6 @@ def get_datasheet_for_wind(lat,long):
             row = {'variable_name': time[i], 'pressure': pressure[i]*1000, 'temperature': temperature[i]*10,
                    'wind_speed': wind_speed[i], 'roughness_length':0.15,'temperature_1':temperature_1[i],'wind_speed_1':wind_speed_1[i]}
             writer.writerow(row)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -366,6 +340,8 @@ def main():
     parser.add_argument('--wind_speed_forecast', action='store_true', help='wind speed forecast')
     parser.add_argument('--irradiance_forecast', action='store_true', help='irradiance forecast')
     parser.add_argument('--wind_energy_predict', action='store_true', help='wind energy predict')
+    parser.add_argument('--start_date', type=str, help='start date in this format YYYY-MM-DD HH:MM')
+    parser.add_argument('--end_date', type=str, help='end date in this format YY-MM-DD HH:MM')
     args = parser.parse_args()
 
 
@@ -376,8 +352,8 @@ def main():
         find_current_weather_status(args.latitude, args.longitude)
         c=1
     if args.wind_energy_predict:
-        get_datasheet_for_wind(args.latitude, args.longitude)
-        wind_energy_output_find.run_example()
+        get_datasheet_for_wind(args.latitude, args.longitude,args.start_date,args.end_date)
+        wind_energy_output_find.run_example(args.start_date,args.end_date)
         c=1
     if args.gonna_rain_tomorrow:
         is_it_going_to_rain_tomorrow(args.latitude, args.longitude)
@@ -389,8 +365,8 @@ def main():
         current_temperature(args.latitude, args.longitude)
         c = 1
     if args.predict_solar_energy:
-        get_datasheet_for_normal_machine_learning(args.latitude, args.longitude)
-        get_Normal_enerdy_predict(args.latitude, args.longitude)
+        get_datasheet_for_normal_machine_learning(args.latitude, args.longitude,args.start_date,args.end_date)
+        get_Normal_enerdy_predict(args.latitude, args.longitude,args.start_date,args.end_date)
         c = 1
     if args.temperature_forecast:
         temperature_forecasting(args.latitude, args.longitude)

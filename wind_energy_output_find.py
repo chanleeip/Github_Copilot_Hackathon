@@ -109,7 +109,7 @@ def calculate_power_output(weather, e126):
     return e126.power_output.to_list()
 
 
-def plot_or_print( e126):
+def plot_or_print( e126,start_date,end_date):
     r"""
     Plots or prints power output and power (coefficient) curves.
 
@@ -127,9 +127,14 @@ def plot_or_print( e126):
 
     # plot or print turbine power output
     if plt:
-        e126.power_output.plot(legend=True)
-        plt.xlabel("Time")
-        plt.ylabel("Power in W")
+        date_range = pd.date_range(start=start_date, end=end_date, freq='H', tz='Asia/Calcutta')
+        plt.plot(date_range, e126.power_output, marker='o', label='Power Output')
+        plt.xlabel('Date')
+        plt.ylabel('Power Output (kW)')
+        plt.title('Solar Power Output')
+        plt.grid(True)
+        plt.xticks(rotation=45)
+        plt.legend()
         plt.show()
         pass
     else:
@@ -137,7 +142,7 @@ def plot_or_print( e126):
 
     # plot or print power curve
 
-def run_example():
+def run_example(start_date,end_date):
     r"""
     Runs the basic example.
 
@@ -151,8 +156,9 @@ def run_example():
     weather = get_weather_data("weather_1.csv")
     e126 = initialize_wind_turbines()
     calculate_power_output(weather, e126)
-    plot_or_print(e126)
+    plot_or_print(e126,start_date,end_date)
     print (calculate_power_output(weather,e126))
+
 
 
 
