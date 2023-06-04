@@ -1,20 +1,20 @@
 # Features
 
-- #####Able to know the Current details by either entering your city name or by entering your location's latitude and longitude.
-- #####This CLI also supports simple queries like 'whether is it going to rain tomorrow' or 'Current temperature of your area ' or 'the current weather status' ..
-- #####This CLI also forecasts weather details like humidity,dedwpoint,temperature etc ..
-- #####We have also included functionalites to predict the solar energy and wind energy output of a particular area by inputting the latitude and longitude ...
-- #####Also included help funcitonality within the CLI to get help.
-- #####Easier to get the required info from the CLI itself.
+- ##### Able to know the Current details by either entering your city name or by entering your location's latitude and longitude.
+- ##### This CLI also supports simple queries like 'whether is it going to rain tomorrow' or 'Current temperature of your area ' or 'the current weather status' ..
+- ##### This CLI also forecasts weather details like humidity,dedwpoint,temperature etc ..
+- ##### We have also included functionalites to predict the solar energy and wind energy output of a particular area by inputting the latitude and longitude ...
+- ##### Also included help funcitonality within the CLI to get help.
+- ##### Easier to get the required info from the CLI itself.
 
 # Installation
 #### run requirements.txt using `pip install -r requirements.txt`
 
-####Clone this repository and and run the python file using the command
+#### Clone this repository and and run the python file using the command
 
 `$ python3 cli.py`
 
-####To run this CLI without python3 keyword
+#### To run this CLI without python3 keyword
 ##### move the file to global path then run this command,
 `$ chmod +x cli.py`
 ####now run by
@@ -70,7 +70,7 @@
 
 
 
-#####Offical submission to Github Copilot Hackathon 2023
+##### Offical submission to Github Copilot Hackathon 2023
 
 
 
