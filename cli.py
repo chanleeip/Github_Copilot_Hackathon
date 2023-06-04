@@ -142,9 +142,9 @@ def get_datasheet_for_normal_machine_learning(lat,long):
             row = {'ghi': shortwave_radiation[i], 'dni': direct_normal_irradiance[i], 'dhi': diffuse_radiation[i],
                    'temp_air': temperature[i], 'wind_speed': windspeed[i]}
             writer.writerow(row)
-def get_Normal_enerdy_predict():
+def get_Normal_enerdy_predict(lat,long):
     get_datasheet_for_normal_machine_learning()
-    latitude , longitude = get_data_tb()
+    latitude , longitude =lat,long
     latitude = float(latitude)
     longitude = float(longitude)
     Start_date = "2023-04-26 00:00"
@@ -340,10 +340,11 @@ def get_datasheet_for_wind(lat,long):
 
 
 
-
+c=0
 
 
 def main():
+    global c
     parser = argparse.ArgumentParser(description='Weather Forecast')
     group = parser.add_mutually_exclusive_group(required=False)
     group.add_argument('--city', type=str, help='Name of the city')
@@ -373,14 +374,50 @@ def main():
         return
     if args.current_weather_status:
         find_current_weather_status(args.latitude, args.longitude)
+        c=1
     if args.wind_energy_predict:
-        # get_datasheet_for_wind(args.latitude, args.longitude)
+        get_datasheet_for_wind(args.latitude, args.longitude)
         wind_energy_output_find.run_example()
+        c=1
     if args.gonna_rain_tomorrow:
         is_it_going_to_rain_tomorrow(args.latitude, args.longitude)
+        c=1
     if args.weather_forecast:
         get_weather_forecast(args.city, args.unit, args.latitude, args.longitude)
-    print('cli --error unexpected input')
+        c=1
+    if args.current_temp:
+        current_temperature(args.latitude, args.longitude)
+        c = 1
+    if args.predict_solar_energy:
+        get_datasheet_for_normal_machine_learning(args.latitude, args.longitude)
+        get_Normal_enerdy_predict(args.latitude, args.longitude)
+        c = 1
+    if args.temperature_forecast:
+        temperature_forecasting(args.latitude, args.longitude)
+    if args.humid_forecast:
+        relative_humidity(args.latitude, args.longitude)
+        c = 1
+    if args.dew_forecast:
+        dewpoint_forecasting(args.latitude, args.longitude)
+        c = 1
+    if args.precipitation_forecast:
+        precipitation_forecasting(args.latitude, args.longitude)
+        c = 1
+    if args.rain_forecast:
+        rain_forecasting(args.latitude, args.longitude)
+        c = 1
+    if args.cloud_cover_forecast:
+        cloudcover_forecasting(args.latitude, args.longitude)
+        c = 1
+    if args.wind_speed_forecast:
+        windspeed_forecasting(args.latitude, args.longitude)
+        c = 1
+    if args.irradiance_forecast:
+        irradiance_forecasting(args.latitude, args.longitude)
+        c = 1
+    else:
+        if c==0:
+            print("please enter a valid argument")
 
 
 if __name__ == '__main__':

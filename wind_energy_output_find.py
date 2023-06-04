@@ -153,7 +153,6 @@ def run_example():
     calculate_power_output(weather, e126)
     plot_or_print(e126)
     print (calculate_power_output(weather,e126))
-run_example()
 
 
 
