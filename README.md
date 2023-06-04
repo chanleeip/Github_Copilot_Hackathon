@@ -17,7 +17,7 @@
 #### To run this CLI without python3 keyword
 ##### move the file to global path then run this command,
 `$ chmod +x cli.py`
-####now run by
+#### now run by
 `$ cli.py`
 
 #Documentation
